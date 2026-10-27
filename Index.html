@@ -12,7 +12,7 @@
     <title>Absensi Siswa LPK Tokyo</title>
     <script>
         // === PWA: Dynamic Manifest & Service Worker ===
-        (function() {
+        (function () {
             // Generate app icon as canvas -> blob URL
             function generateAppIcon(size) {
                 var c = document.createElement('canvas');
@@ -97,7 +97,7 @@
                 ].join('\n');
                 var swBlob = new Blob([swCode], { type: 'application/javascript' });
                 var swUrl = URL.createObjectURL(swBlob);
-                navigator.serviceWorker.register(swUrl, { scope: window.location.href.split('?')[0] }).catch(function() {
+                navigator.serviceWorker.register(swUrl, { scope: window.location.href.split('?')[0] }).catch(function () {
                     // Service worker registration may fail on script.google.com - that's OK
                     // The manifest and meta tags still enable "Add to Home Screen"
                 });
@@ -171,24 +171,30 @@
             height: 7px;
             width: 7px;
         }
+
         .desktop-scroll::-webkit-scrollbar-track {
             background: rgba(148, 163, 184, 0.1);
             border-radius: 9999px;
         }
+
         .desktop-scroll::-webkit-scrollbar-thumb {
             background: rgba(99, 102, 241, 0.4);
             border-radius: 9999px;
             transition: background 0.2s;
         }
+
         .desktop-scroll::-webkit-scrollbar-thumb:hover {
             background: rgba(99, 102, 241, 0.8);
         }
+
         .dark .desktop-scroll::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
         }
+
         .dark .desktop-scroll::-webkit-scrollbar-thumb {
             background: rgba(129, 140, 248, 0.4);
         }
+
         .dark .desktop-scroll::-webkit-scrollbar-thumb:hover {
             background: rgba(129, 140, 248, 0.8);
         }
@@ -308,17 +314,7 @@
                 </button>
             </form>
 
-            <div
-                class="pt-2 text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800 w-full text-center">
-                <p class="font-bold text-slate-500 dark:text-slate-400 mb-1">Akun Default (Username / Pass):</p>
-                <div class="grid grid-cols-2 gap-1 text-[10px] text-slate-400">
-                    <span><code>singgih</code> / <code>pass123</code></span>
-                    <span><code>esti</code> / <code>pass123</code></span>
-                    <span><code>khaerul</code> / <code>pass123</code></span>
-                    <span><code>robbi</code> / <code>pass123</code></span>
-                    <span><code>rowi</code> / <code>pass123</code></span>
-                </div>
-            </div>
+
 
         </div>
     </div>
@@ -346,6 +342,17 @@
             </div>
 
             <div class="flex items-center gap-1.5">
+                <button id="btnCrossSearch" onclick="openCrossSearch()" title="Pencarian Siswa Lintas Kelas (Admin)"
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition shadow-xs hidden">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+                <button onclick="openKeyboardHelpModal()" title="Bantuan Keyboard Shortcut (Tekan ?)"
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <span class="text-xs">⌨️</span>
+                </button>
                 <button onclick="openShortcutGuideModal()" title="Pasang Pintasan di HP"
                     class="w-8 h-8 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition shadow-xs">
                     <span class="text-sm">📱</span>
@@ -388,14 +395,17 @@
     </header>
 
     <!-- MAIN APP CONTAINER (RESPONSIVE PC & MOBILE) -->
-    <main id="mainContainer" class="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto w-full px-4 pt-3 flex-1 transition-all duration-300">
+    <main id="mainContainer"
+        class="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto w-full px-4 pt-3 flex-1 transition-all duration-300">
 
         <!-- SENSEI TABS (HANYA MENAMPILKAN SHEET SENSEI YANG LOGIN) -->
         <div class="mb-3">
             <div class="flex items-center justify-between mb-1.5 px-0.5">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span
+                    class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                     <span>Sheet Presensi</span>
-                    <span class="text-[10px] text-slate-400 font-normal hidden sm:inline">(Geser mouse / klik panah)</span>
+                    <span class="text-[10px] text-slate-400 font-normal hidden sm:inline">(Geser mouse / klik
+                        panah)</span>
                 </span>
                 <span id="accessLockHint"
                     class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -403,14 +413,17 @@
                 </span>
             </div>
             <div class="relative group/tabs">
-                <button type="button" onclick="scrollSenseiTabs(-180)" aria-label="Geser Sheet ke Kiri" title="Geser ke kiri"
+                <button type="button" onclick="scrollSenseiTabs(-180)" aria-label="Geser Sheet ke Kiri"
+                    title="Geser ke kiri"
                     class="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-600 transition active:scale-90 text-xs font-bold">
                     &#10094;
                 </button>
-                <div id="senseiTabContainer" class="flex gap-2 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar desktop-scroll drag-scroll scroll-smooth px-1">
+                <div id="senseiTabContainer"
+                    class="flex gap-2 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar desktop-scroll drag-scroll scroll-smooth px-1">
                     <!-- Rendered by JS -->
                 </div>
-                <button type="button" onclick="scrollSenseiTabs(180)" aria-label="Geser Sheet ke Kanan" title="Geser ke kanan"
+                <button type="button" onclick="scrollSenseiTabs(180)" aria-label="Geser Sheet ke Kanan"
+                    title="Geser ke kanan"
                     class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-600 transition active:scale-90 text-xs font-bold">
                     &#10095;
                 </button>
@@ -454,14 +467,17 @@
 
             <!-- CAROUSEL TANGGAL 1 - 31 (HORIZONTAL SCROLL DENGAN MOUSE DRAG & PANAH) -->
             <div class="relative group/dates">
-                <button type="button" onclick="scrollDatesCarousel(-200)" aria-label="Geser Tanggal ke Kiri" title="Geser tanggal ke kiri"
+                <button type="button" onclick="scrollDatesCarousel(-200)" aria-label="Geser Tanggal ke Kiri"
+                    title="Geser tanggal ke kiri"
                     class="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-600 transition active:scale-90 text-xs font-bold">
                     &#10094;
                 </button>
-                <div id="datesCarousel" class="flex gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar desktop-scroll scroll-smooth drag-scroll px-1">
+                <div id="datesCarousel"
+                    class="flex gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar desktop-scroll scroll-smooth drag-scroll px-1">
                     <!-- Rendered by JS -->
                 </div>
-                <button type="button" onclick="scrollDatesCarousel(200)" aria-label="Geser Tanggal ke Kanan" title="Geser tanggal ke kanan"
+                <button type="button" onclick="scrollDatesCarousel(200)" aria-label="Geser Tanggal ke Kanan"
+                    title="Geser tanggal ke kanan"
                     class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-600 transition active:scale-90 text-xs font-bold">
                     &#10095;
                 </button>
@@ -500,48 +516,85 @@
                     <span class="flex items-center gap-1 text-slate-600 dark:text-slate-400"><span
                             class="w-2.5 h-2.5 rounded-full bg-slate-600"></span> L: Libur</span>
                 </div>
-                <div class="flex items-center justify-between text-xs font-semibold pt-0.5">
-                    <span class="text-slate-500 dark:text-slate-400">Set Presensi Massal:</span>
-                    <div class="flex items-center gap-1.5">
-                        <button onclick="setAllAttendance('H')"
+                <div class="flex flex-wrap items-center justify-between gap-1.5 text-xs font-semibold pt-0.5">
+                    <span class="text-slate-500 dark:text-slate-400">Presensi &amp; Laporan:</span>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button onclick="setAllAttendance('H')" title="Set semua siswa hadir"
                             class="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 text-xs font-bold transition">
                             &#9889; semua H
                         </button>
-                        <button onclick="setAllAttendance('L')"
+                        <button onclick="setAllAttendance('L')" title="Set semua siswa libur"
                             class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 text-xs font-bold transition">
                             &#127796; semua L
+                        </button>
+                        <button onclick="openWhatsAppReportModal()" title="Salin / Kirim Laporan ke WhatsApp"
+                            class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs flex items-center gap-1 transition active:scale-95">
+                            <span>📱</span>
+                            <span>Laporan WA</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- QUICK COUNTER BADGES (ATAS) -->
+            <!-- QUICK COUNTER BADGES (INTERAKTIF SEBAGAI FILTER CEPAT) -->
             <div id="dailyCounters" class="grid grid-cols-5 gap-1.5 text-center">
-                <div
-                    class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/40 p-2 rounded-2xl shadow-xs">
+                <div onclick="toggleStatusFilter('H')" title="Klik untuk memfilter yang Hadir"
+                    class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/40 p-2 rounded-2xl shadow-xs cursor-pointer hover:scale-[1.03] transition active:scale-95 group">
                     <div id="countH" class="text-base font-black text-emerald-600 dark:text-emerald-400">0</div>
-                    <div class="text-[10px] font-bold text-emerald-700 dark:text-emerald-500">Hadir</div>
+                    <div class="text-[10px] font-bold text-emerald-700 dark:text-emerald-500 group-hover:underline">Hadir</div>
                 </div>
-                <div
-                    class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-900/40 p-2 rounded-2xl shadow-xs">
+                <div onclick="toggleStatusFilter('S')" title="Klik untuk memfilter yang Sakit"
+                    class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-900/40 p-2 rounded-2xl shadow-xs cursor-pointer hover:scale-[1.03] transition active:scale-95 group">
                     <div id="countS" class="text-base font-black text-sky-600 dark:text-sky-400">0</div>
-                    <div class="text-[10px] font-bold text-sky-700 dark:text-sky-500">Sakit</div>
+                    <div class="text-[10px] font-bold text-sky-700 dark:text-sky-500 group-hover:underline">Sakit</div>
                 </div>
-                <div
-                    class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/40 p-2 rounded-2xl shadow-xs">
+                <div onclick="toggleStatusFilter('I')" title="Klik untuk memfilter yang Izin"
+                    class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/40 p-2 rounded-2xl shadow-xs cursor-pointer hover:scale-[1.03] transition active:scale-95 group">
                     <div id="countI" class="text-base font-black text-amber-600 dark:text-amber-400">0</div>
-                    <div class="text-[10px] font-bold text-amber-700 dark:text-amber-500">Izin</div>
+                    <div class="text-[10px] font-bold text-amber-700 dark:text-amber-500 group-hover:underline">Izin</div>
                 </div>
-                <div
-                    class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/40 p-2 rounded-2xl shadow-xs">
+                <div onclick="toggleStatusFilter('A')" title="Klik untuk memfilter yang Alfa"
+                    class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/40 p-2 rounded-2xl shadow-xs cursor-pointer hover:scale-[1.03] transition active:scale-95 group">
                     <div id="countA" class="text-base font-black text-rose-600 dark:text-rose-400">0</div>
-                    <div class="text-[10px] font-bold text-rose-700 dark:text-rose-500">Alfa</div>
+                    <div class="text-[10px] font-bold text-rose-700 dark:text-rose-500 group-hover:underline">Alfa</div>
                 </div>
-                <div
-                    class="bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/60 dark:border-slate-700/60 p-2 rounded-2xl shadow-xs">
+                <div onclick="toggleStatusFilter('L')" title="Klik untuk memfilter yang Libur"
+                    class="bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/60 dark:border-slate-700/60 p-2 rounded-2xl shadow-xs cursor-pointer hover:scale-[1.03] transition active:scale-95 group">
                     <div id="countL" class="text-base font-black text-slate-700 dark:text-slate-300">0</div>
-                    <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Libur</div>
+                    <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:underline">Libur</div>
                 </div>
+            </div>
+
+            <!-- CHIP FILTER STATUS HARIAN -->
+            <div id="statusFilterBar" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5 text-[11px] font-bold">
+                <button type="button" onclick="setStatusFilter('ALL')" id="filterChipALL"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-indigo-600 text-white border-indigo-600 shadow-xs">
+                    Semua (<span id="filterCountALL">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('UNMARKED')" id="filterChipUNMARKED"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/40">
+                    ⚠️ Belum Diabsen (<span id="filterCountUNMARKED">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('H')" id="filterChipH"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40">
+                    ✅ Hadir (<span id="filterCountH">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('S')" id="filterChipS"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 border-sky-300 dark:border-sky-800 hover:bg-sky-50 dark:hover:bg-sky-950/40">
+                    🏥 Sakit (<span id="filterCountS">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('I')" id="filterChipI"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/40">
+                    ✉️ Izin (<span id="filterCountI">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('A')" id="filterChipA"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950/40">
+                    ❌ Alfa (<span id="filterCountA">0</span>)
+                </button>
+                <button type="button" onclick="setStatusFilter('L')" id="filterChipL"
+                    class="px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    🏖️ Libur (<span id="filterCountL">0</span>)
+                </button>
             </div>
 
             <!-- FITUR PENCARIAN NAMA SISWA (QUICK SEARCH) -->
@@ -568,6 +621,11 @@
                     class="hidden text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 px-2.5 py-1 rounded-full shrink-0 shadow-xs border border-indigo-100 dark:border-indigo-900/60">
                     0 siswa
                 </span>
+                <button id="btnCrossSearchQuick" onclick="openCrossSearch()" title="Cari Lintas Kelas (Admin)"
+                    class="hidden text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 px-2.5 py-1 rounded-full shrink-0 shadow-xs border border-indigo-200 dark:border-indigo-800 transition items-center gap-1">
+                    <span>🌐</span>
+                    <span class="hidden sm:inline">Lintas Kelas</span>
+                </button>
             </div>
 
             <!-- DAFTAR KARTU SISWA / STAFF -->
@@ -699,8 +757,13 @@
                         </button>
                     </div>
 
-                    <!-- TOMBOL DOWNLOAD REKAP & PRINT -->
-                    <div class="flex items-center gap-1.5 w-full sm:w-auto">
+                    <!-- TOMBOL DOWNLOAD REKAP, PRINT & ADMIN OVERVIEW -->
+                    <div class="flex items-center gap-1.5 w-full sm:w-auto flex-wrap">
+                        <button id="btnAdminOverview" onclick="openAdminOverviewModal()" title="Ringkasan Performa Seluruh Kelas (Admin)"
+                            class="hidden px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs shadow-md shadow-purple-600/20 items-center justify-center gap-1.5 transition active:scale-95">
+                            <span>📊</span>
+                            <span>Overview Semua Kelas</span>
+                        </button>
                         <button onclick="downloadRekapCSV()"
                             class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center gap-1.5 transition active:scale-95">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -721,17 +784,26 @@
                 </div>
 
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <span class="text-indigo-600 dark:text-indigo-400 font-bold">&#9757; Geser Mouse (Drag / Roda):</span>
-                        <span>Geser kanan-kiri untuk melihat tanggal 1 - 31</span>
-                    </p>
+                    <!-- SEARCH NAMA SISWA DI TABEL REKAP -->
+                    <div class="relative w-full sm:w-64">
+                        <input type="text" id="rekapStudentSearchInput" placeholder="Cari siswa di tabel rekap..." oninput="filterRekapTable(this.value)" autocomplete="off"
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 pl-8 text-xs font-semibold text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500">
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔍</span>
+                        <button id="rekapSearchClearBtn" onclick="clearRekapSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold">✕</button>
+                    </div>
+
                     <div class="flex items-center gap-1 text-[10px] font-bold">
-                        <button type="button" onclick="scrollRekapTable(0)" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Awal (Tgl 1)</button>
-                        <button type="button" onclick="scrollRekapTable(420)" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Tengah (Tgl 15)</button>
-                        <button type="button" onclick="scrollRekapTable(9999)" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Akhir (Total)</button>
+                        <span class="text-slate-400 mr-1 hidden md:inline">Geser:</span>
+                        <button type="button" onclick="scrollRekapTable(0)"
+                            class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Awal (Tgl 1)</button>
+                        <button type="button" onclick="scrollRekapTable(420)"
+                            class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Tengah (Tgl 15)</button>
+                        <button type="button" onclick="scrollRekapTable(9999)"
+                            class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 transition">Akhir (Total)</button>
                     </div>
                 </div>
-                <div id="rekapTableWrapper" class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 desktop-scroll drag-scroll">
+                <div id="rekapTableWrapper"
+                    class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 desktop-scroll drag-scroll">
                     <table class="w-full text-xs text-left border-collapse">
                         <thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 sticky top-0">
                             <tr id="rekapTableHeaderRow">
@@ -748,6 +820,31 @@
                         <tfoot id="rekapTableFoot" class="bg-slate-100 dark:bg-slate-800 font-bold">
                         </tfoot>
                     </table>
+                </div>
+            </div>
+
+            <!-- GRAFIK TREN KEHADIRAN PER KELAS -->
+            <div id="trendChartCard" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>📈</span>
+                            <span>Tren Kehadiran Harian</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Jumlah siswa hadir per tanggal di bulan ini</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="chartAvgBadge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900">Rata-rata: -</span>
+                    </div>
+                </div>
+                <!-- Legenda Warna -->
+                <div class="flex flex-wrap gap-3 mb-3 text-[10px] font-bold">
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-indigo-500 inline-block"></span> Jumlah Hadir</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-1.5 rounded bg-emerald-500 inline-block"></span> Rata-rata</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-1.5 rounded bg-rose-400 inline-block border-dashed"></span> Hari Weekend</span>
+                </div>
+                <div class="overflow-x-auto no-scrollbar">
+                    <canvas id="trendChartCanvas" style="height:180px;min-width:500px;max-width:100%;" class="w-full"></canvas>
                 </div>
             </div>
         </div>
@@ -869,6 +966,151 @@
 
     </main>
 
+    <!-- MODAL PENCARIAN SISWA LINTAS KELAS (ADMIN) -->
+    <div id="crossSearchModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl border-t sm:border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">🔍 Pencarian Siswa Lintas Kelas</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Cari nama siswa di semua kelas (khusus Admin)</p>
+                </div>
+                <button onclick="closeCrossSearch()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">&#10005;</button>
+            </div>
+            <!-- Search Input -->
+            <div class="px-5 pt-4 pb-2 shrink-0">
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500 transition px-3 py-2.5">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="crossSearchInput" placeholder="Ketik nama siswa (min 2 huruf)..." oninput="doCrossSearch(this.value)" autocomplete="off"
+                        class="w-full bg-transparent border-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none" />
+                    <button id="crossSearchClearBtn" onclick="clearCrossSearch()" class="hidden text-slate-400 hover:text-rose-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Results -->
+            <div id="crossSearchResults" class="flex-1 overflow-y-auto px-5 pb-5 pt-2 space-y-1.5 min-h-[200px]">
+                <div class="text-center text-slate-400 text-xs py-8">
+                    <span class="text-3xl block mb-2">🔍</span>
+                    Ketik nama siswa untuk mencari di semua kelas
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI PINDAH TANGGAL / KELAS (UNSAVED CHANGES) -->
+    <div id="unsavedModal" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 max-w-sm w-full rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mx-auto">&#9888;</div>
+            <div class="text-center">
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Perubahan Belum Disimpan!</h3>
+                <p id="unsavedModalMsg" class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                    Presensi tanggal <strong id="unsavedModalDay"></strong> belum disimpan.<br>Yakin ingin pindah tanpa menyimpan?
+                </p>
+            </div>
+            <div class="flex gap-2.5 pt-1">
+                <button id="unsavedModalCancelBtn" onclick="cancelUnsavedLeave()" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 transition">Kembali &amp; Simpan</button>
+                <button id="unsavedModalConfirmBtn" onclick="confirmUnsavedLeave()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md transition">Lanjut Tanpa Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LAPORAN WHATSAPP -->
+    <div id="waReportModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 max-w-lg w-full rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">📱</span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Format Laporan WhatsApp</h3>
+                        <p class="text-[11px] text-slate-400">Siap disalin atau dikirim langsung ke grup WA</p>
+                    </div>
+                </div>
+                <button onclick="closeWhatsAppReportModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">&#10005;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto space-y-2">
+                <div class="relative">
+                    <textarea id="waReportText" rows="11" readonly
+                        class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-3.5 text-xs font-mono text-slate-800 dark:text-slate-100 focus:outline-none select-all leading-relaxed"></textarea>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                <button onclick="copyWhatsAppReport()"
+                    class="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition active:scale-95">
+                    <span>📋</span>
+                    <span>Salin Teks Laporan</span>
+                </button>
+                <button onclick="sendToWhatsApp()"
+                    class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition active:scale-95">
+                    <span>📲</span>
+                    <span>Kirim via WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL OVERVIEW KOMPARASI SELURUH KELAS (ADMIN) -->
+    <div id="adminOverviewModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 w-full sm:max-w-3xl rounded-t-3xl sm:rounded-3xl border-t sm:border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh]">
+            <div class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>📊</span>
+                        <span>Overview Kehadiran Semua Kelas</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Monitoring perbandingan seluruh kelas di bulan <span id="adminOverviewMonthYear">Oktober 2026</span></p>
+                </div>
+                <button onclick="closeAdminOverviewModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">&#10005;</button>
+            </div>
+            <div id="adminOverviewContent" class="flex-1 overflow-y-auto p-5 space-y-3">
+                <div class="text-center py-8 text-slate-400 animate-pulse">
+                    <div class="w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    Menghitung statistik seluruh kelas...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PANDUAN KEYBOARD SHORTCUT -->
+    <div id="keyboardHelpModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 max-w-sm w-full rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>⌨️</span>
+                    <span>Shortcut Keyboard PC / Laptop</span>
+                </h3>
+                <button onclick="closeKeyboardHelpModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">✕</button>
+            </div>
+            <div class="space-y-2 text-xs">
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-600 dark:text-slate-300">Pindah Siswa Aktif</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-800 dark:text-slate-200">↓ / ↑ atau J / K</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-600 dark:text-slate-300">Ubah Status Siswa</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-indigo-600 dark:text-indigo-400">H, S, I, A, L</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-600 dark:text-slate-300">Simpan Presensi</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-800 dark:text-slate-200">Ctrl + S</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-600 dark:text-slate-300">Fokus Cari Siswa</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-800 dark:text-slate-200">/ atau F</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-slate-600 dark:text-slate-300">Buka Laporan WA</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-800 dark:text-slate-200">W</span>
+                </div>
+                <div class="flex items-center justify-between py-1">
+                    <span class="text-slate-600 dark:text-slate-300">Bantuan Shortcut</span>
+                    <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-800 dark:text-slate-200">?</span>
+                </div>
+            </div>
+            <button onclick="closeKeyboardHelpModal()" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs rounded-xl text-slate-700 dark:text-slate-300 transition">Mengerti</button>
+        </div>
+    </div>
+
     <!-- FIXED FLOATING SAVE FOOTER BAR -->
     <div id="floatingSaveBar"
         class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 p-3 shadow-2xl">
@@ -938,16 +1180,21 @@
             </div>
 
             <!-- Kenapa Kadang Tidak Bisa Dibuka? -->
-            <div class="bg-amber-50 dark:bg-amber-950/40 p-3.5 rounded-2xl border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 text-amber-900 dark:text-amber-200">
+            <div
+                class="bg-amber-50 dark:bg-amber-950/40 p-3.5 rounded-2xl border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 text-amber-900 dark:text-amber-200">
                 <span class="font-extrabold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
                     <span>💡</span>
                     <span>Penyebab Pintasan Kadang Tidak Bisa Dibuka:</span>
                 </span>
                 <p class="text-[11px] leading-relaxed">
-                    1. <strong>Link Iframe Sementara:</strong> Jika pintasan disimpan saat browser berada di URL sandbox sementara Google (<code>googleusercontent.com</code>), link akan kadaluarsa setelah beberapa jam. Gunakan tombol <strong>Salin Link Bersih</strong> di bawah ini.
+                    1. <strong>Link Iframe Sementara:</strong> Jika pintasan disimpan saat browser berada di URL sandbox
+                    sementara Google (<code>googleusercontent.com</code>), link akan kadaluarsa setelah beberapa jam.
+                    Gunakan tombol <strong>Salin Link Bersih</strong> di bawah ini.
                 </p>
                 <p class="text-[11px] leading-relaxed">
-                    2. <strong>Izin Akses Deployment:</strong> Pastikan di Apps Script: <em>Deploy &rarr; Manage deployments &rarr; "Who has access"</em> diatur ke <strong>"Anyone" (Siapa saja)</strong> agar HP tidak terkena error izin Google.
+                    2. <strong>Izin Akses Deployment:</strong> Pastikan di Apps Script: <em>Deploy &rarr; Manage
+                        deployments &rarr; "Who has access"</em> diatur ke <strong>"Anyone" (Siapa saja)</strong> agar
+                    HP tidak terkena error izin Google.
                 </p>
             </div>
 
@@ -969,7 +1216,8 @@
 
             <!-- Panduan Android & iPhone -->
             <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300 pt-1">
-                <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div
+                    class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-1">
                     <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
                         <span>🤖</span>
                         <span>Cara Pasang di Android (Google Chrome):</span>
@@ -977,20 +1225,24 @@
                     <ol class="list-decimal list-inside text-[11px] space-y-1 pl-1 text-slate-600 dark:text-slate-300">
                         <li>Buka link resmi di atas menggunakan aplikasi <strong>Google Chrome</strong>.</li>
                         <li>Ketuk <strong>ikon titik 3 (⋮)</strong> di pojok kanan atas browser.</li>
-                        <li>Pilih <strong>"Tambahkan ke Layar Utama"</strong> (Add to Home screen) atau <strong>"Pasang aplikasi"</strong>.</li>
+                        <li>Pilih <strong>"Tambahkan ke Layar Utama"</strong> (Add to Home screen) atau <strong>"Pasang
+                                aplikasi"</strong>.</li>
                         <li>Pintasan akan langsung muncul di layar HP Anda dan siap dibuka kapan saja!</li>
                     </ol>
                 </div>
 
-                <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div
+                    class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-1">
                     <span class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
                         <span>🍎</span>
                         <span>Cara Pasang di iPhone (Safari):</span>
                     </span>
                     <ol class="list-decimal list-inside text-[11px] space-y-1 pl-1 text-slate-600 dark:text-slate-300">
                         <li>Buka link resmi di atas menggunakan browser <strong>Safari</strong>.</li>
-                        <li>Ketuk tombol <strong>Bagikan / Share</strong> (ikon kotak panah ke atas di bilah bawah).</li>
-                        <li>Gulir ke bawah dan ketuk <strong>"Tambahkan ke Layar Utama"</strong> (Add to Home Screen).</li>
+                        <li>Ketuk tombol <strong>Bagikan / Share</strong> (ikon kotak panah ke atas di bilah bawah).
+                        </li>
+                        <li>Gulir ke bawah dan ketuk <strong>"Tambahkan ke Layar Utama"</strong> (Add to Home Screen).
+                        </li>
                     </ol>
                 </div>
             </div>
@@ -1579,7 +1831,17 @@
             });
         }
 
+        function initTheme() {
+            let t = null;
+            try { t = localStorage.getItem('lpk_theme'); } catch (e) { }
+            const dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.classList.toggle('dark', dark);
+            document.getElementById('moonIcon').classList.toggle('hidden', dark);
+            document.getElementById('sunIcon').classList.toggle('hidden', !dark);
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            initTheme();
             initHorizontalScrolls();
             checkStoredAuth();
         });
@@ -1652,16 +1914,38 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('userRoleBadge').innerHTML = '<span>&#128100; ' + user.name + '</span>';
 
+            const btnCrossSearch = document.getElementById('btnCrossSearch');
+            const btnCrossSearchQuick = document.getElementById('btnCrossSearchQuick');
+            const btnAdminOverview = document.getElementById('btnAdminOverview');
+
             if (user.role !== 'admin') {
                 const allowed = getUserAllowedSheets(user);
                 currentSensei = allowed.length > 0 ? allowed[0] : (user.sheet || "Singgih Sensei");
                 document.getElementById('accessLockHint').classList.remove('hidden');
                 const btnKicked = document.getElementById('tabBtnKicked');
                 if (btnKicked) btnKicked.classList.add('hidden');
+                if (btnCrossSearch) btnCrossSearch.classList.add('hidden');
+                if (btnCrossSearchQuick) {
+                    btnCrossSearchQuick.classList.add('hidden');
+                    btnCrossSearchQuick.classList.remove('flex');
+                }
+                if (btnAdminOverview) {
+                    btnAdminOverview.classList.add('hidden');
+                    btnAdminOverview.classList.remove('flex');
+                }
             } else {
                 document.getElementById('accessLockHint').classList.add('hidden');
                 const btnKicked = document.getElementById('tabBtnKicked');
                 if (btnKicked) btnKicked.classList.remove('hidden');
+                if (btnCrossSearch) btnCrossSearch.classList.remove('hidden');
+                if (btnCrossSearchQuick) {
+                    btnCrossSearchQuick.classList.remove('hidden');
+                    btnCrossSearchQuick.classList.add('flex');
+                }
+                if (btnAdminOverview) {
+                    btnAdminOverview.classList.remove('hidden');
+                    btnAdminOverview.classList.add('flex');
+                }
             }
 
             initApp();
@@ -1679,21 +1963,21 @@
         function getCanonicalAppUrl() {
             let serverUrl = "<?= typeof webAppUrl !== 'undefined' ? webAppUrl : '' ?>";
             if (serverUrl && serverUrl.startsWith("http") && !serverUrl.includes("<?")) {
-                try { localStorage.setItem("LPK_TOKYO_CANONICAL_URL", serverUrl); } catch(e) {}
+                try { localStorage.setItem("LPK_TOKYO_CANONICAL_URL", serverUrl); } catch (e) { }
                 return serverUrl;
             }
             try {
                 const stored = localStorage.getItem("LPK_TOKYO_CANONICAL_URL");
                 if (stored && stored.startsWith("http")) return stored;
-            } catch(e) {}
+            } catch (e) { }
             try {
                 const loc = window.location.href;
                 if (loc.includes("script.google.com/macros/s/")) {
                     const clean = loc.split('?')[0].replace(/\/u\/\d+/, '');
-                    try { localStorage.setItem("LPK_TOKYO_CANONICAL_URL", clean); } catch(e) {}
+                    try { localStorage.setItem("LPK_TOKYO_CANONICAL_URL", clean); } catch (e) { }
                     return clean;
                 }
-            } catch(e) {}
+            } catch (e) { }
             return "https://script.google.com/macros/s/.../exec";
         }
 
@@ -1716,7 +2000,7 @@
             try {
                 navigator.clipboard.writeText(input.value);
                 showToast("Link resmi berhasil disalin ke clipboard! 📋", "success");
-            } catch(e) {
+            } catch (e) {
                 document.execCommand('copy');
                 showToast("Link resmi berhasil disalin! 📋", "success");
             }
@@ -1867,9 +2151,19 @@
         function toggleDarkMode() {
             const html = document.documentElement;
             const isDark = html.classList.toggle('dark');
+            try { localStorage.setItem('lpk_theme', isDark ? 'dark' : 'light'); } catch (e) { }
             document.getElementById('moonIcon').classList.toggle('hidden', isDark);
             document.getElementById('sunIcon').classList.toggle('hidden', !isDark);
         }
+
+        const _toastOrig = showToast;
+        showToast = function (msg, type) {
+            if (/sesi berakhir/i.test(String(msg || ''))) {
+                handleLogout();
+                return _toastOrig('Sesi berakhir, silakan login ulang.', 'error');
+            }
+            return _toastOrig(msg, type);
+        };
 
         function onSenseiListLoaded(list) {
             if (list && list.length > 0) {
@@ -2080,7 +2374,7 @@
                 try {
                     const raw = localStorage.getItem("STAFF_ATTENDANCE_" + selectedYear + "_" + selectedMonth);
                     if (raw) cachedStorage = JSON.parse(raw);
-                } catch(e) {}
+                } catch (e) { }
             }
 
             const now = new Date();
@@ -2251,6 +2545,15 @@
             // Salin dengan mempertahankan originalIdx agar mapping update presensi tepat
             let filteredStudents = studentsData.map((st, idx) => ({ ...st, originalIdx: idx }));
 
+            // Filter status harian (ALL, UNMARKED, H, S, I, A, L)
+            if (currentStatusFilter && currentStatusFilter !== 'ALL') {
+                filteredStudents = filteredStudents.filter(st => {
+                    const val = currentDayStatusMap[st.originalIdx] || "";
+                    if (currentStatusFilter === 'UNMARKED') return val === "";
+                    return val === currentStatusFilter;
+                });
+            }
+
             if (studentSearchQuery) {
                 filteredStudents = filteredStudents.filter(st => {
                     const nameMatch = String(st.nama || "").toLowerCase().includes(studentSearchQuery);
@@ -2267,13 +2570,20 @@
             }
 
             if (filteredStudents.length === 0) {
+                const label = currentStatusFilter === 'UNMARKED' ? 'belum diabsen' :
+                    currentStatusFilter === 'H' ? 'Hadir' :
+                    currentStatusFilter === 'S' ? 'Sakit' :
+                    currentStatusFilter === 'I' ? 'Izin' :
+                    currentStatusFilter === 'A' ? 'Alfa' :
+                    currentStatusFilter === 'L' ? 'Libur' : '';
                 container.innerHTML = `
           <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2.5">
-            <span class="text-3xl block">🔍</span>
-            <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Tidak ada siswa dengan nama "${studentSearchQuery}"</p>
-            <p class="text-[11px] text-slate-400">Pastikan ejaan nama sudah sesuai</p>
-            <button onclick="clearStudentSearch()" class="mt-2 px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-extrabold hover:bg-indigo-100 transition">
-              Reset Pencarian
+            <span class="text-3xl block">${currentStatusFilter !== 'ALL' ? '📋' : '🔍'}</span>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                ${currentStatusFilter !== 'ALL' ? `Tidak ada siswa dengan status "${label}" pada tanggal ini` : `Tidak ada siswa dengan nama "${studentSearchQuery}"`}
+            </p>
+            <button onclick="${currentStatusFilter !== 'ALL' ? 'setStatusFilter(\'ALL\')' : 'clearStudentSearch()'}" class="mt-2 px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-extrabold hover:bg-indigo-100 transition">
+              ${currentStatusFilter !== 'ALL' ? 'Tampilkan Semua Siswa' : 'Reset Pencarian'}
             </button>
           </div>
         `;
@@ -2336,12 +2646,12 @@
                 const rawNamaSafe = (st.nama || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
                 const isPersonStaff = st.nama.toLowerCase().includes("staff");
-                const roleSubtext = isStaffSheet 
+                const roleSubtext = isStaffSheet
                     ? (isPersonStaff ? "Staff Administrasi LPK Tokyo" : "Sensei Pengajar LPK Tokyo")
                     : "Siswa LPK Tokyo";
 
                 return `
-          <div id="student-card-${idx}" class="bg-white dark:bg-slate-900 rounded-2xl p-4 border ${isNoteRequired && !currentNote ? 'border-amber-400 dark:border-amber-500 ring-2 ring-amber-400/20' : 'border-slate-200/90 dark:border-slate-800'} shadow-sm transition-all flex flex-col gap-3">
+          <div id="student-card-${idx}" onclick="focusStudentCard(${idx})" class="student-card-item cursor-pointer bg-white dark:bg-slate-900 rounded-2xl p-4 border ${isNoteRequired && !currentNote ? 'border-amber-400 dark:border-amber-500 ring-2 ring-amber-400/20' : 'border-slate-200/90 dark:border-slate-800'} shadow-sm transition-all flex flex-col gap-3">
             
             <!-- HEADER: NOMOR, NAMA LENGKAP & STATUS BADGE -->
             <div class="flex items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -2460,12 +2770,20 @@
                 else unmarked++;
             });
 
-            // 1. UPDATE QUICK BADGES DI ATAS
+            // 1. UPDATE QUICK BADGES DI ATAS & CHIPS FILTER
             document.getElementById('countH').innerText = h;
             document.getElementById('countS').innerText = s;
             document.getElementById('countI').innerText = i;
             document.getElementById('countA').innerText = a;
             document.getElementById('countL').innerText = l;
+
+            const elAll = document.getElementById('filterCountALL'); if (elAll) elAll.innerText = total;
+            const elUnmarked = document.getElementById('filterCountUNMARKED'); if (elUnmarked) elUnmarked.innerText = unmarked;
+            const elH = document.getElementById('filterCountH'); if (elH) elH.innerText = h;
+            const elS = document.getElementById('filterCountS'); if (elS) elS.innerText = s;
+            const elI = document.getElementById('filterCountI'); if (elI) elI.innerText = i;
+            const elA = document.getElementById('filterCountA'); if (elA) elA.innerText = a;
+            const elL = document.getElementById('filterCountL'); if (elL) elL.innerText = l;
 
             // 2. UPDATE KARTU REKAPITULASI KESELURUHAN (BERAPA-BERAPANYA)
             const dateTitleEl = document.getElementById('summaryDateTitle');
@@ -2611,7 +2929,7 @@
                                 storageObj[idx] = { attendance: st.attendance, notes: st.notes };
                             });
                             localStorage.setItem("STAFF_ATTENDANCE_" + selectedYear + "_" + selectedMonth, JSON.stringify(storageObj));
-                        } catch(e) {}
+                        } catch (e) { }
                         showToast(`Presensi Staff & Sensei tanggal ${selectedDay} berhasil disimpan secara online!`, "success");
                     } else {
                         showToast(`Presensi tanggal ${selectedDay} berhasil disimpan!`, "success");
@@ -2726,7 +3044,7 @@
                 const totalBelajar = countH + countS + countI + countA;
 
                 bodyHtml += `
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+          <tr class="rekap-row hover:bg-slate-50 dark:hover:bg-slate-800/40" data-student-name="${(st.nama || '').toLowerCase()}">
             <td class="p-2 border-b border-r border-slate-200 dark:border-slate-800 text-center font-bold sticky left-0 bg-white dark:bg-slate-900 z-10">${st.no}</td>
             <td class="p-2 border-b border-r border-slate-200 dark:border-slate-800 font-bold sticky left-8 bg-white dark:bg-slate-900 z-10 truncate max-w-[150px] uppercase">${st.nama}</td>
             ${rowDatesHtml}
@@ -2740,6 +3058,7 @@
             });
 
             tableBody.innerHTML = bodyHtml;
+            if (rekapSearchQuery) filterRekapTable(rekapSearchQuery);
 
             // REKAP BARIS TOTAL HADIR PERTANGGAL (FOOTER TABLE)
             let footDatesHtml = '';
@@ -3653,18 +3972,18 @@
                 </div>
                 <div class="flex flex-wrap gap-1">
                   ${daysWithAtt.map(d => {
-                      let bg = 'bg-emerald-500 text-white';
-                      if (d.val === 'S') bg = 'bg-amber-500 text-white';
-                      else if (d.val === 'I') bg = 'bg-blue-500 text-white';
-                      else if (d.val === 'A') bg = 'bg-rose-500 text-white';
-                      else if (d.val === 'L') bg = 'bg-purple-500 text-white';
-                      return `
+                            let bg = 'bg-emerald-500 text-white';
+                            if (d.val === 'S') bg = 'bg-amber-500 text-white';
+                            else if (d.val === 'I') bg = 'bg-blue-500 text-white';
+                            else if (d.val === 'A') bg = 'bg-rose-500 text-white';
+                            else if (d.val === 'L') bg = 'bg-purple-500 text-white';
+                            return `
                         <div class="flex flex-col items-center justify-center w-8 h-8 rounded-lg ${bg} text-center shadow-xs" title="Tgl ${d.day}: ${d.val} ${d.note ? '(' + d.note + ')' : ''}">
                           <span class="text-[8px] opacity-85 leading-none">T${d.day}</span>
                           <span class="text-[10px] font-black leading-none mt-0.5">${d.val}</span>
                         </div>
                       `;
-                  }).join('')}
+                        }).join('')}
                 </div>
                 ${daysWithAtt.some(d => d.note) ? `
                   <div class="mt-2 text-[10px] text-slate-600 dark:text-slate-300 space-y-0.5 bg-white/60 dark:bg-slate-900/60 p-2 rounded-xl border border-indigo-50 dark:border-indigo-950">
@@ -4083,6 +4402,845 @@
                 showToast("Pop-up diblokir browser, mohon izinkan pop-up!", "warning");
             }
         }
+    </script>
+
+    <!-- ========== FITUR BARU: TREND CHART, CROSS-CLASS SEARCH, UNSAVED MODAL ========== -->
+    <script>
+
+        // ==========================================
+        // GRAFIK TREN KEHADIRAN (CANVAS API)
+        // ==========================================
+        let _trendChartRAF = null;
+
+        function renderTrendChart() {
+            const canvas = document.getElementById('trendChartCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+            const isDark = document.documentElement.classList.contains('dark');
+
+            // Build daily hadir count from studentsData
+            const dailyH = [];
+            let sumH = 0, countDays = 0;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dow = getDayOfWeek(d, selectedMonth, selectedYear);
+                const isWeekend = (dow === 0 || dow === 6);
+                let h = 0;
+                if (!isWeekend) {
+                    studentsData.forEach(st => {
+                        if (st.attendance && st.attendance[d] === 'H') h++;
+                    });
+                    // fallback to spreadsheet totals
+                    if (h === 0 && spreadsheetDailyTotals[d]) h = spreadsheetDailyTotals[d];
+                    sumH += h;
+                    countDays++;
+                }
+                dailyH.push({ d, h: isWeekend ? null : h, isWeekend });
+            }
+            const avg = countDays > 0 ? (sumH / countDays) : 0;
+            const avgBadge = document.getElementById('chartAvgBadge');
+            if (avgBadge) avgBadge.textContent = `Rata-rata: ${avg.toFixed(1)} siswa/hari`;
+
+            // Sizing
+            const dpr = window.devicePixelRatio || 1;
+            const W = canvas.offsetWidth || 600;
+            const H = 180;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.height = H + 'px';
+            ctx.scale(dpr, dpr);
+
+            // Theme colors
+            const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const barColor = isDark ? 'rgba(99,102,241,0.75)' : 'rgba(99,102,241,0.7)';
+            const barActiveColor = isDark ? 'rgba(129,140,248,0.9)' : 'rgba(79,70,229,0.9)';
+            const weekendColor = isDark ? 'rgba(248,113,113,0.15)' : 'rgba(252,165,165,0.25)';
+            const avgLineColor = isDark ? '#34d399' : '#10b981';
+
+            const padL = 32, padR = 8, padT = 16, padB = 28;
+            const chartW = W - padL - padR;
+            const chartH = H - padT - padB;
+            const maxVal = Math.max(...dailyH.map(d => d.h || 0), 1);
+            const barW = Math.max(4, (chartW / daysInMonth) - 2);
+            const barSpacing = chartW / daysInMonth;
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Grid lines
+            const gridLines = 4;
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= gridLines; i++) {
+                const y = padT + chartH - (i / gridLines) * chartH;
+                ctx.beginPath();
+                ctx.moveTo(padL, y);
+                ctx.lineTo(padL + chartW, y);
+                ctx.stroke();
+                // Y label
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${Math.floor(10 * dpr) / dpr}px system-ui`;
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round((i / gridLines) * maxVal), padL - 4, y + 3);
+            }
+
+            // Bars & weekend shading
+            dailyH.forEach(({ d, h, isWeekend }) => {
+                const x = padL + (d - 1) * barSpacing + barSpacing / 2;
+                const barX = x - barW / 2;
+                if (isWeekend) {
+                    ctx.fillStyle = weekendColor;
+                    ctx.fillRect(padL + (d - 1) * barSpacing, padT, barSpacing, chartH);
+                } else if (h !== null) {
+                    const barH = (h / maxVal) * chartH;
+                    const barY = padT + chartH - barH;
+                    const isToday = d === selectedDay;
+                    ctx.fillStyle = isToday ? barActiveColor : barColor;
+                    // Rounded top corners
+                    const r = Math.min(3, barW / 2);
+                    ctx.beginPath();
+                    ctx.moveTo(barX + r, barY);
+                    ctx.lineTo(barX + barW - r, barY);
+                    ctx.quadraticCurveTo(barX + barW, barY, barX + barW, barY + r);
+                    ctx.lineTo(barX + barW, padT + chartH);
+                    ctx.lineTo(barX, padT + chartH);
+                    ctx.lineTo(barX, barY + r);
+                    ctx.quadraticCurveTo(barX, barY, barX + r, barY);
+                    ctx.fill();
+                    // Value label on top of bar if space
+                    if (h > 0 && barH > 16) {
+                        ctx.fillStyle = isDark ? '#c7d2fe' : '#4338ca';
+                        ctx.font = `bold ${Math.floor(9 * dpr) / dpr}px system-ui`;
+                        ctx.textAlign = 'center';
+                        ctx.fillText(h, x, barY - 2);
+                    }
+                }
+                // X axis label
+                if (d === 1 || d % 5 === 0 || d === daysInMonth) {
+                    ctx.fillStyle = textColor;
+                    ctx.font = `${Math.floor(9 * dpr) / dpr}px system-ui`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(d, x, H - padB + 14);
+                }
+            });
+
+            // Average line
+            const avgY = padT + chartH - (avg / maxVal) * chartH;
+            ctx.beginPath();
+            ctx.strokeStyle = avgLineColor;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(padL, avgY);
+            ctx.lineTo(padL + chartW, avgY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Current day marker
+            if (selectedDay >= 1 && selectedDay <= daysInMonth) {
+                const cx = padL + (selectedDay - 1) * barSpacing + barSpacing / 2;
+                ctx.beginPath();
+                ctx.strokeStyle = isDark ? '#f59e0b' : '#d97706';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([3, 3]);
+                ctx.moveTo(cx, padT);
+                ctx.lineTo(cx, padT + chartH);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        // Hook renderTrendChart after data loads
+        const _origRenderRekapTable = renderRekapTable;
+        renderRekapTable = function() {
+            _origRenderRekapTable();
+            if (_trendChartRAF) cancelAnimationFrame(_trendChartRAF);
+            _trendChartRAF = requestAnimationFrame(renderTrendChart);
+        };
+
+        window.addEventListener('resize', () => {
+            if (viewMode === 'rekap') {
+                if (_trendChartRAF) cancelAnimationFrame(_trendChartRAF);
+                _trendChartRAF = requestAnimationFrame(renderTrendChart);
+            }
+        });
+
+        // ==========================================
+        // PENCARIAN SISWA LINTAS KELAS (ADMIN ONLY)
+        // ==========================================
+        let _crossSearchAllData = {};   // { senseiName: [studentObj, ...] }
+        let _crossSearchLoading = false;
+        let _crossSearchDebounce = null;
+
+        function openCrossSearch() {
+            if (!currentUser || currentUser.role !== 'admin') {
+                showToast('Pencarian lintas kelas hanya tersedia untuk Administrator!', 'error');
+                return;
+            }
+            document.getElementById('crossSearchModal').classList.remove('hidden');
+            document.getElementById('crossSearchInput').focus();
+            // Pre-load all class data if not already loaded
+            _loadAllClassDataForSearch();
+        }
+
+        function closeCrossSearch() {
+            document.getElementById('crossSearchModal').classList.add('hidden');
+            clearCrossSearch();
+        }
+
+        function clearCrossSearch() {
+            const inp = document.getElementById('crossSearchInput');
+            if (inp) inp.value = '';
+            document.getElementById('crossSearchClearBtn').classList.add('hidden');
+            document.getElementById('crossSearchResults').innerHTML = `
+                <div class="text-center text-slate-400 text-xs py-8">
+                    <span class="text-3xl block mb-2">🔍</span>
+                    Ketik nama siswa untuk mencari di semua kelas
+                </div>`;
+        }
+
+        function _loadAllClassDataForSearch() {
+            const nonStaffList = senseiList.filter(s => !isStaffSenseiSheet(s));
+            const missing = nonStaffList.filter(s => !_crossSearchAllData[s]);
+            if (missing.length === 0) return;
+
+            if (_crossSearchLoading) return;
+            _crossSearchLoading = true;
+
+            // Load one class at a time (parallel calls to GAS)
+            let loaded = 0;
+            const total = missing.length;
+
+            const resultsEl = document.getElementById('crossSearchResults');
+            if (resultsEl && document.getElementById('crossSearchInput').value.length < 2) {
+                resultsEl.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 animate-pulse">
+                    <div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    Memuat data ${total} kelas...</div>`;
+            }
+
+            missing.forEach(senseiName => {
+                if (typeof google !== 'undefined' && google.script && google.script.run) {
+                    google.script.run
+                        .withSuccessHandler(res => {
+                            if (res && res.success && res.students) {
+                                _crossSearchAllData[senseiName] = res.students.map(st => ({ ...st, _kelas: senseiName }));
+                            }
+                            loaded++;
+                            if (loaded >= total) { _crossSearchLoading = false; }
+                            // Re-run search if user has typed something
+                            const q = document.getElementById('crossSearchInput') ? document.getElementById('crossSearchInput').value : '';
+                            if (q.length >= 2) doCrossSearch(q);
+                        })
+                        .withFailureHandler(() => {
+                            loaded++;
+                            if (loaded >= total) _crossSearchLoading = false;
+                        })
+                        .getAttendanceData(senseiName, selectedMonth, selectedYear, currentUser);
+                } else {
+                    // Mock mode: use current studentsData
+                    _crossSearchAllData[senseiName] = studentsData.map(st => ({ ...st, _kelas: senseiName }));
+                    loaded++;
+                    if (loaded >= total) _crossSearchLoading = false;
+                }
+            });
+        }
+
+        function doCrossSearch(val) {
+            const q = (val || '').trim().toLowerCase();
+            const clearBtn = document.getElementById('crossSearchClearBtn');
+            if (clearBtn) clearBtn.classList.toggle('hidden', q.length === 0);
+
+            if (q.length < 2) {
+                clearCrossSearch();
+                document.getElementById('crossSearchInput').value = val;
+                return;
+            }
+
+            if (_crossSearchDebounce) clearTimeout(_crossSearchDebounce);
+            _crossSearchDebounce = setTimeout(() => {
+                _executeCrossSearch(q);
+            }, 200);
+        }
+
+        function _executeCrossSearch(q) {
+            const resultsEl = document.getElementById('crossSearchResults');
+            if (!resultsEl) return;
+
+            const allResults = [];
+            Object.keys(_crossSearchAllData).forEach(kelas => {
+                (_crossSearchAllData[kelas] || []).forEach(st => {
+                    const nameStr = String(st.nama || '').toLowerCase();
+                    if (nameStr.includes(q)) {
+                        allResults.push({ ...st, _kelas: kelas });
+                    }
+                });
+            });
+
+            // Also search current class
+            studentsData.forEach(st => {
+                const nameStr = String(st.nama || '').toLowerCase();
+                if (nameStr.includes(q)) {
+                    const exists = allResults.some(r => r.nama === st.nama && r._kelas === currentSensei);
+                    if (!exists) allResults.push({ ...st, _kelas: currentSensei });
+                }
+            });
+
+            if (allResults.length === 0) {
+                resultsEl.innerHTML = `
+                    <div class="text-center py-8">
+                        <span class="text-3xl block mb-2">😔</span>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Tidak ada siswa dengan nama "${q}"</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Coba cari dengan kata kunci lain</p>
+                    </div>`;
+                if (_crossSearchLoading) {
+                    resultsEl.innerHTML += `<p class="text-center text-[11px] text-amber-500 animate-pulse">⏳ Masih memuat beberapa kelas...</p>`;
+                }
+                return;
+            }
+
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const highlight = str => str.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi'),
+                '<mark class="bg-amber-200 dark:bg-amber-400/40 text-inherit rounded px-0.5">$1</mark>');
+
+            resultsEl.innerHTML = `
+                <p class="text-[10px] text-slate-400 font-semibold mb-2 uppercase tracking-wide">Ditemukan ${allResults.length} siswa di ${[...new Set(allResults.map(r => r._kelas))].length} kelas</p>` +
+                allResults.map(st => {
+                    // Count attendance summary
+                    let h = 0, a = 0, s = 0, iCnt = 0;
+                    if (st.attendance) {
+                        Object.values(st.attendance).forEach(v => {
+                            if (v === 'H') h++; else if (v === 'A') a++; else if (v === 'S') s++; else if (v === 'I') iCnt++;
+                        });
+                    }
+                    const total = h + a + s + iCnt;
+                    const pct = total > 0 ? Math.round(h / total * 100) : 0;
+                    const pctColor = pct >= 80 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400';
+                    return `
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700 p-3 flex items-center gap-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer" onclick="jumpToClass('${esc(st._kelas)}', '${esc(st.nama)}')">
+                        <div class="w-9 h-9 shrink-0 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-extrabold text-sm border border-indigo-100 dark:border-indigo-900">${esc(String(st.no || '?'))}</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-extrabold text-slate-900 dark:text-slate-100 uppercase truncate">${highlight(esc(st.nama || ''))}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
+                                <span class="inline-flex items-center gap-0.5 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded-full font-bold text-[9px]">&#128100; ${esc(st._kelas)}</span>
+                                ${total > 0 ? `<span class="${pctColor} font-bold">${pct}% hadir</span> <span class="text-slate-300 dark:text-slate-600">|</span> <span class="text-emerald-600 dark:text-emerald-400">H:${h}</span> <span class="text-sky-600 dark:text-sky-400">S:${s}</span> <span class="text-amber-600 dark:text-amber-400">I:${iCnt}</span> <span class="text-rose-600 dark:text-rose-400">A:${a}</span>` : '<span class="text-slate-400">Belum ada data</span>'}
+                            </p>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-300 dark:text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>`;
+                }).join('');
+        }
+
+        function jumpToClass(kelas, studentName) {
+            closeCrossSearch();
+            selectSensei(kelas);
+            if (studentName) {
+                setTimeout(() => {
+                    const inp = document.getElementById('studentSearchInput');
+                    if (inp) {
+                        inp.value = studentName;
+                        handleStudentSearch(studentName);
+                    }
+                }, 400);
+            }
+        }
+
+        // ==========================================
+        // MODAL UNSAVED CHANGES (menggantikan confirm())
+        // ==========================================
+        let _unsavedCallback = null;
+
+        function showUnsavedModal(dayNum, onConfirm) {
+            _unsavedCallback = onConfirm;
+            const dayEl = document.getElementById('unsavedModalDay');
+            if (dayEl) dayEl.textContent = dayNum + ' ' + BULAN_NAMES[selectedMonth] + ' ' + selectedYear;
+            document.getElementById('unsavedModal').classList.remove('hidden');
+        }
+
+        function cancelUnsavedLeave() {
+            _unsavedCallback = null;
+            document.getElementById('unsavedModal').classList.add('hidden');
+        }
+
+        function confirmUnsavedLeave() {
+            document.getElementById('unsavedModal').classList.add('hidden');
+            const cb = _unsavedCallback;
+            _unsavedCallback = null;
+            if (typeof cb === 'function') cb();
+        }
+
+        // ==========================================
+        // FITUR 1: FILTER STATUS HARIAN CEPAT (CHIP FILTER)
+        // ==========================================
+        let currentStatusFilter = 'ALL';
+
+        function setStatusFilter(filter) {
+            currentStatusFilter = filter;
+            const chips = ['ALL', 'UNMARKED', 'H', 'S', 'I', 'A', 'L'];
+            chips.forEach(c => {
+                const btn = document.getElementById('filterChip' + c);
+                if (!btn) return;
+                const isActive = (c === currentStatusFilter);
+                if (isActive) {
+                    btn.className = "px-3 py-1 rounded-full whitespace-nowrap transition border text-white shadow-xs " +
+                        (c === 'ALL' ? 'bg-indigo-600 border-indigo-600' :
+                         c === 'UNMARKED' ? 'bg-amber-500 border-amber-500' :
+                         c === 'H' ? 'bg-emerald-600 border-emerald-600' :
+                         c === 'S' ? 'bg-sky-600 border-sky-600' :
+                         c === 'I' ? 'bg-amber-600 border-amber-600' :
+                         c === 'A' ? 'bg-rose-600 border-rose-600' :
+                         'bg-slate-700 border-slate-700');
+                } else {
+                    btn.className = "px-3 py-1 rounded-full whitespace-nowrap transition border bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 " +
+                        (c === 'ALL' ? 'text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800' :
+                         c === 'UNMARKED' ? 'text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800' :
+                         c === 'H' ? 'text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800' :
+                         c === 'S' ? 'text-sky-600 dark:text-sky-400 border-sky-300 dark:border-sky-800' :
+                         c === 'I' ? 'text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800' :
+                         c === 'A' ? 'text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800' :
+                         'text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700');
+                }
+            });
+            renderStudentCards();
+        }
+
+        function toggleStatusFilter(filter) {
+            setStatusFilter(currentStatusFilter === filter ? 'ALL' : filter);
+        }
+
+        // ==========================================
+        // FITUR 2: PENCARIAN SISWA DI TABEL REKAP
+        // ==========================================
+        let rekapSearchQuery = '';
+
+        function filterRekapTable(query) {
+            rekapSearchQuery = (query || '').trim().toLowerCase();
+            const clearBtn = document.getElementById('rekapSearchClearBtn');
+            if (clearBtn) clearBtn.classList.toggle('hidden', rekapSearchQuery.length === 0);
+            const rows = document.querySelectorAll('#rekapTableBody tr.rekap-row');
+            rows.forEach(r => {
+                const name = r.getAttribute('data-student-name') || '';
+                r.style.display = (!rekapSearchQuery || name.includes(rekapSearchQuery)) ? '' : 'none';
+            });
+        }
+
+        function clearRekapSearch() {
+            const inp = document.getElementById('rekapStudentSearchInput');
+            if (inp) inp.value = '';
+            filterRekapTable('');
+        }
+
+        // ==========================================
+        // FITUR 3: GENERATOR & KIRIM LAPORAN WHATSAPP
+        // ==========================================
+        function openWhatsAppReportModal() {
+            const isStaff = isStaffSenseiSheet(currentSensei);
+            const dateStr = `${selectedDay} ${BULAN_NAMES[selectedMonth]} ${selectedYear}`;
+            const dowStr = NAMA_HARI[new Date(selectedYear, selectedMonth - 1, selectedDay).getDay()];
+            let h = 0, s = 0, i = 0, a = 0, l = 0, unmarked = 0;
+            const sakitList = [], izinList = [], alfaList = [];
+
+            studentsData.forEach((st, idx) => {
+                const stat = currentDayStatusMap[idx];
+                const note = (currentDayNoteMap[idx] || '').trim();
+                if (stat === 'H') h++;
+                else if (stat === 'S') { s++; sakitList.push(st.nama + (note ? ` (${note})` : '')); }
+                else if (stat === 'I') { i++; izinList.push(st.nama + (note ? ` (${note})` : '')); }
+                else if (stat === 'A') { a++; alfaList.push(st.nama); }
+                else if (stat === 'L') l++;
+                else unmarked++;
+            });
+
+            let text = `📋 *LAPORAN PRESENSI LPK TOKYO*\n`;
+            text += `📅 *Hari/Tgl:* ${dowStr}, ${dateStr}\n`;
+            text += `👤 *Kelas:* ${currentSensei}\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `👥 *Total:* ${studentsData.length} ${isStaff ? 'Personil' : 'Siswa'}\n`;
+            text += `✅ *Hadir:* ${h}\n`;
+            if (s > 0) text += `🏥 *Sakit:* ${s}\n`;
+            if (i > 0) text += `✉️ *Izin:* ${i}\n`;
+            if (a > 0) text += `❌ *Alfa:* ${a}\n`;
+            if (l > 0) text += `🏖️ *Libur:* ${l}\n`;
+            if (unmarked > 0) text += `⚠️ *Belum Diabsen:* ${unmarked}\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+
+            if (sakitList.length > 0) {
+                text += `\n*🏥 Rincian Sakit:*\n` + sakitList.map((n, idx) => `${idx + 1}. ${n}`).join('\n');
+            }
+            if (izinList.length > 0) {
+                text += `\n*✉️ Rincian Izin:*\n` + izinList.map((n, idx) => `${idx + 1}. ${n}`).join('\n');
+            }
+            if (alfaList.length > 0) {
+                text += `\n*❌ Rincian Alfa:*\n` + alfaList.map((n, idx) => `${idx + 1}. ${n}`).join('\n');
+            }
+            text += `\n\n_Dicatat via Sistem Presensi Siswa LPK Tokyo_`;
+
+            const ta = document.getElementById('waReportText');
+            if (ta) ta.value = text;
+            document.getElementById('waReportModal').classList.remove('hidden');
+        }
+
+        function closeWhatsAppReportModal() {
+            document.getElementById('waReportModal').classList.add('hidden');
+        }
+
+        function copyWhatsAppReport() {
+            const ta = document.getElementById('waReportText');
+            if (!ta || !ta.value) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ta.value).then(() => {
+                    showToast('Format laporan WA berhasil disalin ke clipboard!', 'success');
+                }).catch(() => {
+                    ta.select();
+                    document.execCommand('copy');
+                    showToast('Format laporan WA berhasil disalin!', 'success');
+                });
+            } else {
+                ta.select();
+                document.execCommand('copy');
+                showToast('Format laporan WA berhasil disalin!', 'success');
+            }
+        }
+
+        function sendToWhatsApp() {
+            const ta = document.getElementById('waReportText');
+            if (!ta || !ta.value) return;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(ta.value)}`;
+            window.open(url, '_blank');
+        }
+
+        // ==========================================
+        // FITUR 4: KEYBOARD SHORTCUTS (INPUT KILAT PC/LAPTOP)
+        // ==========================================
+        let _activeStudentIdx = 0;
+
+        function focusStudentCard(idx) {
+            _activeStudentIdx = idx;
+            document.querySelectorAll('.student-card-item').forEach(el => {
+                el.classList.remove('ring-4', 'ring-indigo-500/80');
+            });
+            const target = document.getElementById(`student-card-${idx}`);
+            if (target) {
+                target.classList.add('ring-4', 'ring-indigo-500/80');
+                target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function openKeyboardHelpModal() {
+            document.getElementById('keyboardHelpModal').classList.remove('hidden');
+        }
+
+        function closeKeyboardHelpModal() {
+            document.getElementById('keyboardHelpModal').classList.add('hidden');
+        }
+
+        window.addEventListener('keydown', function(e) {
+            const tag = document.activeElement ? document.activeElement.tagName.toUpperCase() : '';
+            const isEditing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
+            // Escape: tutup modal aktif
+            if (e.key === 'Escape') {
+                closeWhatsAppReportModal();
+                closeAdminOverviewModal();
+                closeKeyboardHelpModal();
+                closeCrossSearch();
+                cancelUnsavedLeave();
+                if (document.activeElement && isEditing) document.activeElement.blur();
+                return;
+            }
+
+            // Ctrl+S / Cmd+S: Simpan Presensi Langsung
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                saveCurrentAttendance();
+                return;
+            }
+
+            // Jangan memicu shortcut 1-tombol jika sedang mengetik teks di form
+            if (isEditing) return;
+
+            // '?' untuk panduan shortcut
+            if (e.key === '?') {
+                e.preventDefault();
+                openKeyboardHelpModal();
+                return;
+            }
+
+            // '/' atau 'F' untuk fokus pencarian siswa
+            if (e.key === '/' || e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                const inp = (viewMode === 'rekap') ? document.getElementById('rekapStudentSearchInput') : document.getElementById('studentSearchInput');
+                if (inp) { inp.focus(); inp.select(); }
+                return;
+            }
+
+            // 'W' untuk buka laporan WhatsApp
+            if (e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                openWhatsAppReportModal();
+                return;
+            }
+
+            // Navigasi kartu siswa & input status kehadiran di mode Harian
+            if (viewMode === 'harian' && studentsData.length > 0) {
+                const total = studentsData.length;
+                if (e.key === 'ArrowDown' || e.key === 'j' || e.key === 'J') {
+                    e.preventDefault();
+                    _activeStudentIdx = (_activeStudentIdx + 1) % total;
+                    focusStudentCard(_activeStudentIdx);
+                } else if (e.key === 'ArrowUp' || e.key === 'k' || e.key === 'K') {
+                    e.preventDefault();
+                    _activeStudentIdx = (_activeStudentIdx - 1 + total) % total;
+                    focusStudentCard(_activeStudentIdx);
+                } else if (['h', 'H', 's', 'S', 'i', 'I', 'a', 'A', 'l', 'L'].includes(e.key)) {
+                    e.preventDefault();
+                    updateStudentStatus(_activeStudentIdx, e.key.toUpperCase());
+                    focusStudentCard(_activeStudentIdx);
+                }
+            }
+        });
+
+        // ==========================================
+        // FITUR 5: DASHBOARD OVERVIEW SELURUH KELAS (ADMIN)
+        // ==========================================
+        function openAdminOverviewModal() {
+            if (!currentUser || currentUser.role !== 'admin') {
+                showToast('Fitur ini hanya dapat diakses oleh Administrator!', 'error');
+                return;
+            }
+            const monthYearEl = document.getElementById('adminOverviewMonthYear');
+            if (monthYearEl) monthYearEl.textContent = `${BULAN_NAMES[selectedMonth]} ${selectedYear}`;
+            document.getElementById('adminOverviewModal').classList.remove('hidden');
+
+            const contentEl = document.getElementById('adminOverviewContent');
+            contentEl.innerHTML = `
+                <div class="text-center py-8 text-slate-400 animate-pulse">
+                    <div class="w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    Memuat ringkasan performa seluruh kelas...
+                </div>`;
+
+            const nonStaffList = senseiList.filter(s => !isStaffSenseiSheet(s));
+            const overviewResults = [];
+            let completed = 0;
+
+            nonStaffList.forEach(senseiName => {
+                if (senseiName === currentSensei && studentsData.length > 0) {
+                    overviewResults.push(_calcClassOverview(senseiName, studentsData));
+                    completed++;
+                    if (completed >= nonStaffList.length) _renderAdminOverview(overviewResults);
+                } else if (typeof google !== 'undefined' && google.script && google.script.run) {
+                    google.script.run
+                        .withSuccessHandler(res => {
+                            if (res && res.success && res.students) {
+                                overviewResults.push(_calcClassOverview(senseiName, res.students));
+                            }
+                            completed++;
+                            if (completed >= nonStaffList.length) _renderAdminOverview(overviewResults);
+                        })
+                        .withFailureHandler(() => {
+                            completed++;
+                            if (completed >= nonStaffList.length) _renderAdminOverview(overviewResults);
+                        })
+                        .getAttendanceData(senseiName, selectedMonth, selectedYear, currentUser);
+                } else {
+                    // Mock fallback mode
+                    overviewResults.push(_calcClassOverview(senseiName, studentsData));
+                    completed++;
+                    if (completed >= nonStaffList.length) _renderAdminOverview(overviewResults);
+                }
+            });
+        }
+
+        function _calcClassOverview(senseiName, students) {
+            let totalH = 0, totalS = 0, totalI = 0, totalA = 0;
+            let totalHadirHariIni = 0;
+            const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+            students.forEach(st => {
+                if (st.attendance) {
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const v = st.attendance[d];
+                        if (v === 'H') totalH++;
+                        else if (v === 'S') totalS++;
+                        else if (v === 'I') totalI++;
+                        else if (v === 'A') totalA++;
+                    }
+                    if (st.attendance[selectedDay] === 'H') totalHadirHariIni++;
+                }
+            });
+            const totalWajib = totalH + totalS + totalI + totalA;
+            const pct = totalWajib > 0 ? Math.round((totalH / totalWajib) * 100) : 0;
+            return {
+                senseiName,
+                studentCount: students.length,
+                pct,
+                totalH,
+                totalS,
+                totalI,
+                totalA,
+                totalHadirHariIni
+            };
+        }
+
+        function _renderAdminOverview(list) {
+            const contentEl = document.getElementById('adminOverviewContent');
+            if (!contentEl) return;
+            if (!list || list.length === 0) {
+                contentEl.innerHTML = '<p class="text-center text-xs text-slate-400 py-8">Tidak ada data kelas yang dapat ditampilkan</p>';
+                return;
+            }
+
+            const totalStudentsAll = list.reduce((a, b) => a + b.studentCount, 0);
+            const totalHAll = list.reduce((a, b) => a + b.totalH, 0);
+            const totalSAll = list.reduce((a, b) => a + b.totalS, 0);
+            const totalIAll = list.reduce((a, b) => a + b.totalI, 0);
+            const totalAAll = list.reduce((a, b) => a + b.totalA, 0);
+            const totalWajibAll = totalHAll + totalSAll + totalIAll + totalAAll;
+            const avgPctAll = totalWajibAll > 0 ? Math.round((totalHAll / totalWajibAll) * 100) : 0;
+
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            contentEl.innerHTML = `
+                <!-- Grand Total Card -->
+                <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-200">Total Keseluruhan LPK Tokyo</span>
+                        <div class="text-xl font-black mt-0.5">${totalStudentsAll} Siswa &bull; ${list.length} Kelas</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-200">Rata-rata Kehadiran</span>
+                        <div class="text-2xl font-black ${avgPctAll >= 80 ? 'text-emerald-300' : 'text-amber-300'}">${avgPctAll}%</div>
+                    </div>
+                </div>
+
+                <!-- Cards Grid per Class -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    ${list.map(c => {
+                        const pctColor = c.pct >= 85 ? 'text-emerald-600 dark:text-emerald-400' : c.pct >= 70 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400';
+                        const barColor = c.pct >= 85 ? 'bg-emerald-500' : c.pct >= 70 ? 'bg-amber-500' : 'bg-rose-500';
+                        return `
+                        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-700 space-y-2.5 hover:shadow-md transition">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">&#128100;</span>
+                                    <h4 class="text-xs font-extrabold text-slate-900 dark:text-white uppercase truncate">${esc(c.senseiName)}</h4>
+                                </div>
+                                <span class="text-xs font-black ${pctColor}">${c.pct}%</span>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="${barColor} h-full transition-all duration-500" style="width: ${c.pct}%"></div>
+                            </div>
+
+                            <!-- Metrics -->
+                            <div class="grid grid-cols-4 gap-1 text-center text-[10px] font-bold pt-1">
+                                <div class="bg-white dark:bg-slate-900/60 rounded-lg p-1 text-emerald-600 dark:text-emerald-400 border border-slate-200/60 dark:border-slate-800">H: ${c.totalH}</div>
+                                <div class="bg-white dark:bg-slate-900/60 rounded-lg p-1 text-sky-600 dark:text-sky-400 border border-slate-200/60 dark:border-slate-800">S: ${c.totalS}</div>
+                                <div class="bg-white dark:bg-slate-900/60 rounded-lg p-1 text-amber-600 dark:text-amber-400 border border-slate-200/60 dark:border-slate-800">I: ${c.totalI}</div>
+                                <div class="bg-white dark:bg-slate-900/60 rounded-lg p-1 text-rose-600 dark:text-rose-400 border border-slate-200/60 dark:border-slate-800">A: ${c.totalA}</div>
+                            </div>
+
+                            <div class="flex items-center justify-between text-[11px] pt-1">
+                                <span class="text-slate-500 dark:text-slate-400 font-semibold">${c.studentCount} siswa &bull; Tgl ${selectedDay}: <strong class="text-slate-800 dark:text-slate-200">${c.totalHadirHariIni} hadir</strong></span>
+                                <button onclick="selectSenseiFromOverview('${esc(c.senseiName)}')"
+                                    class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 font-extrabold text-[10px] transition">
+                                    Buka Kelas &rarr;
+                                </button>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function selectSenseiFromOverview(senseiName) {
+            closeAdminOverviewModal();
+            selectSensei(senseiName);
+        }
+
+        function closeAdminOverviewModal() {
+            document.getElementById('adminOverviewModal').classList.add('hidden');
+        }
+
+    </script>
+
+    <script>
+        /* ===== UX v3.1: penjaga data belum tersimpan + kartu "Perlu Perhatian" ===== */
+        (function () {
+            let baseline = '';
+            const snap = () => JSON.stringify([currentDayStatusMap, currentDayNoteMap]);
+            const isDirty = () => viewMode === 'harian' && studentsData.length > 0 && baseline !== '' && snap() !== baseline;
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            // Ganti confirm() bawaan browser dgn modal custom yang lebih indah
+            function askLeaveAsync(dayNum, onProceed) {
+                if (!isDirty()) { onProceed(); return; }
+                showUnsavedModal(dayNum, onProceed);
+            }
+            // Untuk kasus sinkron (beforeunload), tetap gunakan confirm()
+            const askLeaveSync = () => !isDirty() || confirm('Presensi tanggal ' + selectedDay + ' belum disimpan.\nLanjut tanpa menyimpan?');
+            const askLeave = askLeaveSync; // Legacy compat
+
+            function renderAttention() {
+                const host = document.getElementById('summaryOverallCard');
+                if (!host) return;
+                let card = document.getElementById('attentionCard');
+                if (!card) {
+                    card = document.createElement('div');
+                    card.id = 'attentionCard';
+                    card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-rose-200/80 dark:border-rose-900/50 shadow-sm p-4 mb-4';
+                    host.insertAdjacentElement('afterend', card);
+                }
+                const list = [];
+                studentsData.forEach(st => {
+                    let a = 0, sakitIzin = 0, hadir = 0;
+                    for (let d = 1; d <= selectedDay; d++) {
+                        const v = (st.attendance && st.attendance[d]) || '';
+                        if (v === 'A') a++; else if (v === 'S' || v === 'I') sakitIzin++; else if (v === 'H') hadir++;
+                    }
+                    const wajib = a + sakitIzin + hadir;
+                    const pct = wajib ? Math.round(hadir / wajib * 100) : 100;
+                    if (a >= 2 || (wajib >= 5 && pct < 75)) list.push({ nama: st.nama, a, pct });
+                });
+                list.sort((x, y) => y.a - x.a || x.pct - y.pct);
+                if (isStaffSenseiSheet(currentSensei) || !list.length) { card.classList.add('hidden'); return; }
+                card.classList.remove('hidden');
+                card.innerHTML = '<h3 class="text-xs font-extrabold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-2">\u26A0\uFE0F Perlu Perhatian bulan ini (' + list.length + ')</h3>' +
+                    '<div class="space-y-1.5">' + list.slice(0, 8).map(s =>
+                        '<div class="flex items-center justify-between text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 rounded-xl px-3 py-2">' +
+                        '<span class="truncate pr-2 text-slate-800 dark:text-slate-100">' + esc(s.nama) + '</span>' +
+                        '<span class="shrink-0 text-rose-600 dark:text-rose-400">Alfa ' + s.a + 'x \u00B7 Hadir ' + s.pct + '%</span></div>').join('') + '</div>' +
+                    '<p class="text-[10px] text-slate-400 mt-2">Kriteria: Alfa \u2265 2 kali atau kehadiran &lt; 75% sampai tanggal ' + selectedDay + '.</p>';
+            }
+
+            const origPopulate = populateCurrentDayStatus;
+            populateCurrentDayStatus = function () { origPopulate(); baseline = snap(); renderAttention(); };
+
+            const origToast = showToast;
+            showToast = function (msg, type) {
+                if (type === 'success' && /disimpan|tersimpan/i.test(String(msg))) { baseline = snap(); renderAttention(); }
+                return origToast(msg, type);
+            };
+
+            const origDate = selectDate, origPick = onDatePicked, origSensei = selectSensei, origMode = setViewMode, origLogout = handleLogout;
+            // Gunakan modal async untuk semua navigasi kecuali beforeunload
+            selectDate = d => askLeaveAsync(selectedDay, () => origDate(d));
+            onDatePicked = v => askLeaveAsync(selectedDay, () => origPick(v));
+            selectSensei = s => askLeaveAsync(selectedDay, () => origSensei(s));
+            setViewMode = m => { if (m === 'harian') { origMode(m); } else { askLeaveAsync(selectedDay, () => origMode(m)); } };
+            handleLogout = () => askLeaveAsync(selectedDay, () => origLogout());
+
+            window.addEventListener('beforeunload', e => { if (isDirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+            // Penanda visual tombol simpan saat ada perubahan
+            setInterval(() => {
+                const btn = document.getElementById('saveAttendanceBtn');
+                if (!btn) return;
+                const dirty = isDirty();
+                btn.classList.toggle('ring-4', dirty);
+                btn.classList.toggle('ring-amber-300', dirty);
+                btn.classList.toggle('animate-pulse', dirty && !btn.disabled);
+                document.title = (dirty ? '\u25CF ' : '') + 'Absensi Siswa LPK Tokyo';
+            }, 400);
+        })();
     </script>
 </body>
 

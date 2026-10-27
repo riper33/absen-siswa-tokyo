@@ -48,6 +48,57 @@ var DEFAULT_USERS = [
   { username: "admin",   password: "admin123", name: "Administrator",  sheet: "ALL",            role: "admin"  }
 ];
 
+
+/* ===== KEAMANAN v3.1: token sesi (HMAC), hash password, anti brute-force, lock ===== */
+var _verified = null;
+function _secret() {
+  var p = PropertiesService.getScriptProperties();
+  var s = p.getProperty('AUTH_SECRET');
+  if (!s) { s = Utilities.getUuid() + Utilities.getUuid(); p.setProperty('AUTH_SECRET', s); }
+  return s;
+}
+function _sign(t) { return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(t, _secret())); }
+function issueToken(username) {
+  var b = username + '|' + (Date.now() + 12 * 3600 * 1000);
+  return b + '|' + _sign(b);
+}
+/** Validasi token dari client; role/akses SELALU diambil ulang dari sheet Users (tidak percaya data client). */
+function authUser(u) {
+  if (u && u === _verified) return u;
+  var err = new Error('Sesi berakhir, silakan login ulang.');
+  if (!u || !u.token) throw err;
+  var p = String(u.token).split('|');
+  if (p.length !== 3 || _sign(p[0] + '|' + p[1]) !== p[2] || Date.now() > Number(p[1])) throw err;
+  var rec = getUsersFromSheet().filter(function(x) { return x.username === p[0]; })[0];
+  if (!rec) throw err;
+  _verified = { username: rec.username, name: rec.name, sheet: rec.sheet, role: rec.role };
+  return _verified;
+}
+function hashPw(pw, salt) {
+  salt = salt || Utilities.getUuid().slice(0, 8);
+  var d = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, salt + pw, Utilities.Charset.UTF_8);
+  return 'sha256$' + salt + '$' + Utilities.base64Encode(d);
+}
+function checkPw(stored, pw) {
+  stored = String(stored || '');
+  if (stored.indexOf('sha256$') === 0) return hashPw(pw, stored.split('$')[1]) === stored;
+  return stored === pw; // password lama (plaintext) -> otomatis di-upgrade ke hash saat login
+}
+function upgradePasswordHash(username, pw) {
+  try {
+    var sh = getSS().getSheetByName("Users"); if (!sh) return;
+    var raw = sh.getDataRange().getValues();
+    for (var i = 1; i < raw.length; i++) {
+      if (String(raw[i][0]).toLowerCase().trim() === username) { sh.getRange(i + 1, 2).setValue(hashPw(pw)); return; }
+    }
+  } catch (e) {}
+}
+function withLock(fn) {
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (e) { return { success: false, message: "Server sedang sibuk, coba lagi sebentar." }; }
+  try { return fn(); } finally { lock.releaseLock(); }
+}
+
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Absensi Siswa LPK Tokyo')
@@ -71,20 +122,28 @@ function loginUser(username, password) {
     username = (username || "").toString().toLowerCase().trim();
     password = (password || "").toString().trim();
 
+    var cache = CacheService.getScriptCache();
+    var failKey = 'LOGINFAIL_' + username;
+    if (Number(cache.get(failKey) || 0) >= 5) {
+      return { success: false, message: "Terlalu banyak percobaan gagal. Coba lagi dalam 15 menit." };
+    }
     var users = getUsersFromSheet();
     var foundUser = null;
 
     for (var i = 0; i < users.length; i++) {
       var u = users[i];
-      if (u.username.toLowerCase() === username && u.password === password) {
+      if (u.username.toLowerCase() === username && checkPw(u.password, password)) {
         foundUser = u;
         break;
       }
     }
 
     if (!foundUser) {
+      cache.put(failKey, String(Number(cache.get(failKey) || 0) + 1), 900);
       return { success: false, message: "Username atau password salah!" };
     }
+    cache.remove(failKey);
+    if (String(foundUser.password).indexOf('sha256$') !== 0) upgradePasswordHash(foundUser.username, password);
 
     return {
       success: true,
@@ -93,7 +152,8 @@ function loginUser(username, password) {
         username: foundUser.username,
         name: foundUser.name,
         sheet: foundUser.sheet,
-        role: foundUser.role
+        role: foundUser.role,
+        token: issueToken(foundUser.username)
       }
     };
   } catch (err) {
@@ -189,10 +249,10 @@ function updateUserPassword(username, oldPassword, newPassword) {
     }
 
     if (userRowIndex !== -1) {
-      if (currentPass && currentPass !== oldPassword) {
+      if (currentPass && !checkPw(currentPass, oldPassword)) {
         return { success: false, message: "Password lama Anda salah!" };
       }
-      sheet.getRange(userRowIndex, 2).setValue(newPassword);
+      sheet.getRange(userRowIndex, 2).setValue(hashPw(newPassword));
       return { success: true, message: "Password untuk " + username + " berhasil diperbarui!" };
     } else {
       return { success: false, message: "User " + username + " tidak ditemukan di sistem Users." };
@@ -212,7 +272,7 @@ function createUsersSheet(ss) {
     sheet.getRange("A1:E1").setFontWeight("bold").setBackground("#334155").setFontColor("#FFFFFF");
     
     var rows = DEFAULT_USERS.map(function(u) {
-      return [u.username, u.password, u.name, u.sheet, u.role];
+      return [u.username, hashPw(u.password), u.name, u.sheet, u.role];
     });
     
     sheet.getRange(2, 1, rows.length, 5).setValues(rows);
@@ -310,6 +370,7 @@ function isUserAllowedSheet(currentUser, sheetName) {
  */
 function getSenseiList(currentUser) {
   try {
+    currentUser = authUser(currentUser);
     var ss = getSS();
     var allSheets = ss ? ss.getSheets().map(function(s) { return s.getName(); }) : [];
     
@@ -351,6 +412,7 @@ function getSenseiList(currentUser) {
     
     return validSheets.filter(function(vs) { return !isStaffSenseiSheet(vs); });
   } catch (err) {
+    if (/Sesi berakhir/.test(String(err))) return [];
     var defaultList = [
       "Singgih Sensei", 
       "Esti Sensei", 
@@ -580,7 +642,7 @@ function getOrCreateMonthlySheet(ss, senseiName, month, year) {
 function getSheetColumnLayout(sheet, month, year) {
   var lastCol = sheet.getLastColumn() || 40;
   var lastRow = sheet.getLastRow() || 50;
-  var m = parseInt(month, 10) || 10;
+  var m = parseInt(month, 10) || (new Date().getMonth() + 1);
 
   var maxHeaderCol = Math.min(lastCol, 38);
   var headerRows = [
@@ -843,6 +905,7 @@ function saveStaffSenseiAttendance(dayTanggal, attendanceUpdates, month, year) {
  */
 function getAttendanceData(senseiName, month, year, currentUser) {
   try {
+    currentUser = authUser(currentUser);
     if (isStaffSenseiSheet(senseiName)) {
       if (currentUser && currentUser.role !== 'admin') {
         return { success: false, message: "Akses Ditolak: Fitur Absensi Staff & Sensei khusus Administrator!" };
@@ -854,8 +917,8 @@ function getAttendanceData(senseiName, month, year, currentUser) {
       return { success: false, message: "Akses Ditolak: Anda tidak memiliki wewenang mengedit sheet " + senseiName };
     }
 
-    var m = parseInt(month, 10) || 10;
-    var y = parseInt(year, 10) || 2026;
+    var m = parseInt(month, 10) || (new Date().getMonth() + 1);
+    var y = parseInt(year, 10) || new Date().getFullYear();
 
     var ss = getSS();
     if (!ss) return { success: false, message: "Spreadsheet tidak ditemukan." };
@@ -1008,8 +1071,9 @@ function getAttendanceData(senseiName, month, year, currentUser) {
 /**
  * Menyimpan data presensi harian
  */
-function saveDailyAttendance(senseiName, dayTanggal, attendanceUpdates, currentUser, month, year) {
+function _saveDailyAttendance(senseiName, dayTanggal, attendanceUpdates, currentUser, month, year) {
   try {
+    currentUser = authUser(currentUser);
     if (isStaffSenseiSheet(senseiName)) {
       if (currentUser && currentUser.role !== 'admin') {
         return { success: false, message: "Akses Ditolak: Hanya Administrator yang berhak menyimpan absensi Staff & Sensei!" };
@@ -1021,8 +1085,8 @@ function saveDailyAttendance(senseiName, dayTanggal, attendanceUpdates, currentU
       return { success: false, message: "Akses Ditolak: Anda hanya boleh mengedit sheet kelas Anda sendiri." };
     }
 
-    var m = parseInt(month, 10) || 10;
-    var y = parseInt(year, 10) || 2026;
+    var m = parseInt(month, 10) || (new Date().getMonth() + 1);
+    var y = parseInt(year, 10) || new Date().getFullYear();
 
     var ss = getSS();
     if (!ss) return { success: false, message: "Spreadsheet tidak ditemukan." };
@@ -1038,31 +1102,33 @@ function saveDailyAttendance(senseiName, dayTanggal, attendanceUpdates, currentU
     var colKeterangan = dateStartCol + 35; // Kolom setelah summary Total (biasanya AM = 39 jika dateStartCol = 4)
 
     var countHadir = 0;
-    attendanceUpdates.forEach(function(item) {
-      if (item.rowIndex && item.status !== undefined) {
-        var cell = sheet.getRange(item.rowIndex, targetCol);
+    var valid = attendanceUpdates.filter(function(i) { return i.rowIndex && i.status !== undefined; });
+    if (valid.length) {
+      var rows = valid.map(function(i) { return i.rowIndex; });
+      var minR = Math.min.apply(null, rows), maxR = Math.max.apply(null, rows);
+      var rng = sheet.getRange(minR, targetCol, maxR - minR + 1, 1);
+      var vals = rng.getValues(), notes = rng.getNotes();
+      valid.forEach(function(item) {
+        var k = item.rowIndex - minR;
         var status = item.status.toString().toUpperCase().trim();
         var note = (item.note || "").toString().trim();
-
-        cell.setValue(status);
+        vals[k][0] = status;
         if (status === 'H') countHadir++;
-
         if ((status === 'S' || status === 'I') && note !== "") {
-          cell.setNote("Tgl " + dayTanggal + ": " + note);
-
+          notes[k][0] = "Tgl " + dayTanggal + ": " + note;
           var ketCell = sheet.getRange(item.rowIndex, colKeterangan);
           var existingKet = ketCell.getValue() ? ketCell.getValue().toString() : "";
-          var newNoteEntry = m + "/" + dayTanggal + " (" + status + "): " + note;
-          
           if (existingKet.indexOf(m + "/" + dayTanggal) === -1) {
-            var updatedKet = existingKet ? (existingKet + " | " + newNoteEntry) : newNoteEntry;
-            ketCell.setValue(updatedKet);
+            var entry = m + "/" + dayTanggal + " (" + status + "): " + note;
+            ketCell.setValue(existingKet ? (existingKet + " | " + entry) : entry);
           }
         } else {
-          cell.clearNote();
+          notes[k][0] = "";
         }
-      }
-    });
+      });
+      rng.setValues(vals);
+      rng.setNotes(notes);
+    }
 
     // Update row "Total hadir pertanggal" bila ada di spreadsheet
     if (layout.summaryRowIndex !== -1) {
@@ -1086,6 +1152,7 @@ function saveDailyAttendance(senseiName, dayTanggal, attendanceUpdates, currentU
  */
 function getAvailableStudents(currentUser, month, year) {
   try {
+    currentUser = authUser(currentUser);
     var ss = getSS();
     if (!ss) return [];
 
@@ -1156,6 +1223,7 @@ function getAvailableStudents(currentUser, month, year) {
 
     return list;
   } catch (err) {
+    if (/Sesi berakhir/.test(String(err))) throw err;
     return [];
   }
 }
@@ -1165,8 +1233,9 @@ function getAvailableStudents(currentUser, month, year) {
  * ATURAN: Siswa hanya bisa ditambahkan jika belum ada di kelas manapun atau sudah di-kick dari kelas lain.
  * Admin memiliki wewenang untuk menambahkan siswa ke kelas manapun.
  */
-function addStudent(senseiName, namaSiswa, currentUser, month, year) {
+function _addStudent(senseiName, namaSiswa, currentUser, month, year) {
   try {
+    currentUser = authUser(currentUser);
     if (isStaffSenseiSheet(senseiName)) {
       return { success: false, message: "Sheet Staff & Sensei bersifat khusus dan full online!" };
     }
@@ -1320,8 +1389,9 @@ function addStudent(senseiName, namaSiswa, currentUser, month, year) {
  * Mengeluarkan / Meng-kick siswa dari daftar presensi kelas
  * Dapat dilakukan oleh Sensei (hanya kelas miliknya) maupun Admin
  */
-function kickStudent(senseiName, studentName, rowIndex, currentUser, month, year, reason) {
+function _kickStudent(senseiName, studentName, rowIndex, currentUser, month, year, reason) {
   try {
+    currentUser = authUser(currentUser);
     if (isStaffSenseiSheet(senseiName)) {
       return { success: false, message: "Fitur Kick tidak berlaku untuk Staff & Sensei!" };
     }
@@ -1413,8 +1483,9 @@ function kickStudent(senseiName, studentName, rowIndex, currentUser, month, year
  * Memindahkan siswa antar kelas (FITUR KHUSUS ADMIN)
  * Contoh: Memindahkan siswa dari Esti Sensei ke Singgih Sensei
  */
-function transferStudent(fromSensei, toSensei, studentName, rowIndex, copyAttendance, month, year, currentUser) {
+function _transferStudent(fromSensei, toSensei, studentName, rowIndex, copyAttendance, month, year, currentUser) {
   try {
+    currentUser = authUser(currentUser);
     if (!currentUser || currentUser.role !== 'admin') {
       return { success: false, message: "Akses Ditolak: Hanya Admin yang berhak memindahkan siswa antar kelas!" };
     }
@@ -1546,6 +1617,7 @@ function transferStudent(fromSensei, toSensei, studentName, rowIndex, copyAttend
  */
 function getAllKickedStudents(currentUser, filterMonth, filterYear) {
   try {
+    currentUser = authUser(currentUser);
     if (!currentUser || currentUser.role !== 'admin') {
       return { success: false, message: "Akses Ditolak: Fitur ini khusus Administrator!" };
     }
@@ -1669,8 +1741,9 @@ function getAllKickedStudents(currentUser, filterMonth, filterYear) {
 /**
  * Menambahkan siswa yang di-kick ke kelas Sensei yang dipilih oleh Administrator
  */
-function assignKickedStudentToClass(studentName, targetSensei, currentUser, month, year) {
+function _assignKickedStudentToClass(studentName, targetSensei, currentUser, month, year) {
   try {
+    currentUser = authUser(currentUser);
     if (!currentUser || currentUser.role !== 'admin') {
       return { success: false, message: "Akses Ditolak: Hanya Administrator yang berhak menempatkan siswa keluar!" };
     }
@@ -1706,7 +1779,7 @@ function assignKickedStudentToClass(studentName, targetSensei, currentUser, mont
     }
 
     // Panggil addStudent untuk memasukkan siswa ke kelas target
-    var addRes = addStudent(targetSensei, studentName, currentUser, month, year);
+    var addRes = _addStudent(targetSensei, studentName, currentUser, month, year);
     if (!addRes.success) {
       return addRes;
     }
@@ -1773,8 +1846,9 @@ function assignKickedStudentToClass(studentName, targetSensei, currentUser, mont
  * Menandai siswa keluar permanen beserta kategorinya (KHUSUS ADMINISTRATOR)
  * Kategori: "Dapat Diterima Kembali" atau "BLACKLIST / Ditolak"
  */
-function setStudentPermanentStatus(studentName, category, adminNotes, currentUser) {
+function _setStudentPermanentStatus(studentName, category, adminNotes, currentUser) {
   try {
+    currentUser = authUser(currentUser);
     if (!currentUser || currentUser.role !== 'admin') {
       return { success: false, message: "Akses Ditolak: Hanya Administrator yang berhak mengatur status permanen!" };
     }
@@ -1822,8 +1896,9 @@ function setStudentPermanentStatus(studentName, category, adminNotes, currentUse
 /**
  * Membuka kembali status siswa menjadi Tersedia (Bebas) (KHUSUS ADMINISTRATOR)
  */
-function reopenStudentStatus(studentName, currentUser) {
+function _reopenStudentStatus(studentName, currentUser) {
   try {
+    currentUser = authUser(currentUser);
     if (!currentUser || currentUser.role !== 'admin') {
       return { success: false, message: "Akses Ditolak: Hanya Administrator yang berhak mengubah status siswa!" };
     }
@@ -1906,3 +1981,17 @@ function applyConditionalFormatting(sheet) {
   rules.push(ruleH, ruleS, ruleI, ruleA, ruleL);
   sheet.setConditionalFormatRules(rules);
 }
+
+function saveDailyAttendance() { var a = arguments; return withLock(function() { return _saveDailyAttendance.apply(null, a); }); }
+
+function addStudent() { var a = arguments; return withLock(function() { return _addStudent.apply(null, a); }); }
+
+function kickStudent() { var a = arguments; return withLock(function() { return _kickStudent.apply(null, a); }); }
+
+function transferStudent() { var a = arguments; return withLock(function() { return _transferStudent.apply(null, a); }); }
+
+function assignKickedStudentToClass() { var a = arguments; return withLock(function() { return _assignKickedStudentToClass.apply(null, a); }); }
+
+function setStudentPermanentStatus() { var a = arguments; return withLock(function() { return _setStudentPermanentStatus.apply(null, a); }); }
+
+function reopenStudentStatus() { var a = arguments; return withLock(function() { return _reopenStudentStatus.apply(null, a); }); }
